@@ -5,7 +5,7 @@ export class RequestsController {
   //   res.send("REQUESTS")
   // }
 
-  static async get(req, res, next) {
+  static async getAll(req, res, next) {
     // To allow for nested GET reviews on tour (hack)
     let filter = {}
     if (req.params.tourId) filter = { tour: req.params.tourId }
@@ -21,5 +21,21 @@ export class RequestsController {
         data: requests,
       },
     })
+  }
+
+  static async createOne(req, res, next) {
+    // Allow nested routes
+    // if (!req.body.user) req.body.user = req.user.id
+    // if (!req.body.tour) req.body.tour = req.params.tourId
+    console.log({BODY: req.body})
+    const newRequest = await Requests.create(req.body)
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        data: newRequest,
+      },
+    })
+    next()
   }
 }

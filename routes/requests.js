@@ -3,4 +3,7 @@ import { RequestsController } from "../controllers/requests.js"
 
 export const requestsRouter = Router()
 
-requestsRouter.get("/", RequestsController.get)
+requestsRouter
+  .route("/")
+  .get(RequestsController.getAll)
+  .post(RequestsController.createOne)
