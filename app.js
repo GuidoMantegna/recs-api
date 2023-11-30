@@ -1,6 +1,6 @@
 import express from "express"
-import { requestRouter } from "./routes/request.js"
-import { replyRouter } from "./routes/reply.js"
+import { requestsRouter } from "./routes/requests.js"
+import { repliesRouter } from "./routes/replies.js"
 
 const app = express()
 
@@ -8,7 +8,7 @@ app.get("/", (req, res) => {
   res.send("<h1>RECS API</h1>")
 })
 
-app.use("/request", requestRouter)
-app.use("/reply", replyRouter)
+app.use("/requests", requestsRouter)
+app.use("/replies", repliesRouter)
 
 export default app
