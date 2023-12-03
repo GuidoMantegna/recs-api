@@ -5,6 +5,7 @@ import { AuthController } from "../controllers/auth.js"
 export const usersRouter = Router()
 
 usersRouter.post("/signup", AuthController.signup)
+usersRouter.post("/login", AuthController.login)
 
 usersRouter
   .route("/")
