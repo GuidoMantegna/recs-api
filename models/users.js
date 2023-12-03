@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -23,9 +24,27 @@ const userSchema = new mongoose.Schema({
   confirmPassword: {
     type: String,
     required: [true, 'Please confirm your password'],
+    validate: {
+      // This only works on CREATE and SAVE!!!
+      // the callback will be called when the new document is created
+      validator: function (el) {
+        return el === this.password;
+      },
+      message: 'Passwords are not the same!',
+    }
   },
 });
 
+// Using the pre('save') middleware will process the data before saving it to the database
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  // bcrypt.hash() will return a promise so the func() should be async
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPassword = undefined; // we don't need to store the confirmPassword
+
+  next();
+});
 
 const Users = mongoose.model('Users', userSchema);
 
