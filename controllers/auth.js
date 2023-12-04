@@ -1,5 +1,6 @@
 import Users from "../models/users.js"
 import jwt from "jsonwebtoken"
+import {promisify} from "util"
 
 const signToken = (id) => {
   return jwt.sign(
@@ -19,6 +20,7 @@ export class AuthController {
       email: req.body.email,
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,
+      passwordChangedAt: req.body.passwordChangedAt,
     })
 
     res.status(201).json({
@@ -51,5 +53,45 @@ export class AuthController {
       status: "success",
       token: signToken(user._id),
     })
+  }
+
+  static async protect(req, res, next) {
+    // 1) Getting token and check of it's there
+    let token
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1]
+    }
+    if (!token) {
+      return next(
+        new Error("You are not logged id! Please log in to get access.")
+      )
+    }
+
+    // 2) Verification token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+
+    // 3) Check if user still exists
+    const currentUser = await Users.findById(decoded.id)
+    if (!currentUser) {
+      return next(
+        new Error(
+          "The user belonging to this token does no longer exist."
+        )
+      )
+    }
+
+    // 4) Check if user changed password after the token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      return next(
+        new Error("User recently changed password! Please log in again.")
+      )
+    }
+
+    // GRANT ACCESS TO PROTECTED ROUTE
+    req.user = currentUser
+    next()
   }
 }

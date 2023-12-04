@@ -9,7 +9,7 @@ usersRouter.post("/login", AuthController.login)
 
 usersRouter
   .route("/")
-  .get(UsersController.getAll)
+  .get(AuthController.protect, UsersController.getAll)
   .post(UsersController.createUser)
 
 usersRouter
