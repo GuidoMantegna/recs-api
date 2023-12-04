@@ -27,13 +27,12 @@ export class RequestsController {
     // Allow nested routes
     // if (!req.body.user) req.body.user = req.user.id
     // if (!req.body.tour) req.body.tour = req.params.tourId
-    console.log({BODY: req.body})
-    const newRequest = await Requests.create(req.body)
+    const newRequest = await Requests.create({...req.body, user: req.user.id})
 
     res.status(201).json({
       status: "success",
       data: {
-        data: newRequest,
+        request: newRequest,
       },
     })
     next()

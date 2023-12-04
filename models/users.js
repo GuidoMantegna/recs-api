@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   passwordChangedAt: Date,
+  requests: Array
 })
 
 // Using the pre('save') middleware will process the data before saving it to the database
