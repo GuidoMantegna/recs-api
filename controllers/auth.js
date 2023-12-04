@@ -1,6 +1,6 @@
 import Users from "../models/users.js"
 import jwt from "jsonwebtoken"
-import {promisify} from "util"
+import { promisify } from "util"
 
 const signToken = (id) => {
   return jwt.sign(
@@ -15,13 +15,7 @@ const signToken = (id) => {
 
 export class AuthController {
   static async signup(req, res, next) {
-    const newUser = await Users.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      confirmPassword: req.body.confirmPassword,
-      passwordChangedAt: req.body.passwordChangedAt,
-    })
+    const newUser = await Users.create(req.body)
 
     res.status(201).json({
       status: "success",
@@ -77,9 +71,7 @@ export class AuthController {
     const currentUser = await Users.findById(decoded.id)
     if (!currentUser) {
       return next(
-        new Error(
-          "The user belonging to this token does no longer exist."
-        )
+        new Error("The user belonging to this token does no longer exist.")
       )
     }
 
@@ -93,5 +85,17 @@ export class AuthController {
     // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser
     next()
+  }
+
+  static restrictTo(...roles) {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return next(
+          new Error("You do not have permission to perform this action", 403)
+        )
+      }
+
+      next()
+    }
   }
 }

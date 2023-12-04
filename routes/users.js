@@ -15,5 +15,9 @@ usersRouter
 usersRouter
   .route("/:id")
   .get(UsersController.getUser)
-  .delete(UsersController.deleteUser)
+  .delete(
+    AuthController.protect,
+    AuthController.restrictTo("admin"),
+    UsersController.deleteUser
+  )
   .patch(UsersController.updateUser)
