@@ -61,11 +61,11 @@ requestsSchema.pre(/^find/, function (next) {
   next()
 })
 
-// requestsSchema.virtual('replieses', {
-//   ref: 'Replies',
-//   foreignField: 'reply',
-//   localField: '_id'
-// })
+requestsSchema.virtual("recs", {
+  ref: "Replies",
+  foreignField: "request",
+  localField: "_id",
+})
 
 const Requests = mongoose.model("Requests", requestsSchema)
 

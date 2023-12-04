@@ -11,7 +11,7 @@ export class RequestsController {
     if (req.params.tourId) filter = { tour: req.params.tourId }
     if (req.params.userId) filter = { user: req.params.userId }
     // Get all requests
-    const requests = await Requests.find(filter)
+    const requests = await Requests.find(filter).populate('replies')
 
     // SEND RESPONSE
     res.status(200).json({
