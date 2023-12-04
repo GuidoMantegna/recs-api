@@ -53,13 +53,13 @@ const requestsSchema = new mongoose.Schema(
   }
 )
 
-// requestsSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: "user",
-//     select: "name",
-//   });
-//   next()
-// })
+requestsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "name",
+  });
+  next()
+})
 
 const Requests = mongoose.model("Requests", requestsSchema)
 
