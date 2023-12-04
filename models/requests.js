@@ -61,6 +61,12 @@ requestsSchema.pre(/^find/, function (next) {
   next()
 })
 
+// requestsSchema.virtual('replieses', {
+//   ref: 'Replies',
+//   foreignField: 'reply',
+//   localField: '_id'
+// })
+
 const Requests = mongoose.model("Requests", requestsSchema)
 
 export default Requests
