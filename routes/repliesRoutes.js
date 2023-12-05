@@ -12,3 +12,4 @@ repliesRouter
 repliesRouter
   .route("/:id")
   .get(AuthController.protect, RepliesController.getOne)
+  .patch(AuthController.protect, RepliesController.likeOne)

@@ -30,6 +30,12 @@ const replySchema = new mongoose.Schema(
         message: "It must be a YouTube video link",
       },
     },
+    likes: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
@@ -45,6 +51,18 @@ const replySchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 )
+
+replySchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "likes",
+    select: "name",
+  })
+  next()
+})
+
+replySchema.virtual("numLikes").get(function () {
+  return this.likes.length
+})
 
 const Reply = mongoose.model("Reply", replySchema)
 

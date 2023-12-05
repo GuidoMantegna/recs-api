@@ -55,4 +55,34 @@ export class RepliesController {
       },
     })
   }
+
+  static async likeOne(req, res, next) {
+    const reply = await Reply.findById(req.params.id)
+
+    if (!reply) {
+      res.status(404).json({
+        status: "fail",
+        message: "No reply found with that ID",
+      })
+      return
+    }
+
+    const updatedReply = await Reply.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { likes: req.user.id },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        reply: updatedReply,
+      },
+    })
+  }
 }
