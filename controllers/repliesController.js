@@ -1,5 +1,6 @@
+import mongoose from "mongoose"
 import Reply from "../models/replyModel.js"
-import Requests from "../models/requestModel.js"
+import Request from "../models/requestModel.js"
 
 export class RepliesController {
   static async getAll(req, res, next) {
@@ -28,15 +29,25 @@ export class RepliesController {
   }
 
   static async createOne(req, res, next) {
+    // Check if request exists and if requestID is valid
+    const isIDValid = mongoose.Types.ObjectId.isValid(req.params.requestId)
+
+    if (!isIDValid) {
+      res.status(404).json({
+        status: "fail",
+        message: "No request found with that ID",
+      })
+      return
+    }
+
     const newReply = await Reply.create({
       ...req.body,
       request: req.params.requestId,
       user: req.user.id,
     })
-    await Requests.findByIdAndUpdate(req.params.requestId, {
+    await Request.findByIdAndUpdate(req.params.requestId, {
       $push: { replies: newReply._id },
     })
-
     res.status(201).json({
       status: "success",
       data: {
