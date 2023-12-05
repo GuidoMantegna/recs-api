@@ -10,8 +10,8 @@ app.get("/", (req, res) => {
   res.send("<h1>RECS API</h1>")
 })
 
-app.use("/requests", requestsRouter)
-app.use("/replies", repliesRouter)
-app.use("/users", usersRouter)
+app.use("/api/v1/requests", requestsRouter)
+app.use("/api/v1/replies", repliesRouter)
+app.use("/api/v1/users", usersRouter)
 
 export default app
