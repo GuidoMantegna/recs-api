@@ -1,4 +1,4 @@
-import Users from "../models/users.js"
+import User from "../models/userModel.js"
 import jwt from "jsonwebtoken"
 import { promisify } from "util"
 
@@ -8,14 +8,14 @@ const signToken = (id) => {
     { id },
     // secret: basically a string for a secret
     process.env.JWT_SECRET,
-    //options
+    // options
     { expiresIn: process.env.JWT_EXPIRES_IN }
   )
 }
 
 export class AuthController {
   static async signup(req, res, next) {
-    const newUser = await Users.create(req.body)
+    const newUser = await User.create(req.body)
 
     res.status(201).json({
       status: "success",
@@ -36,7 +36,7 @@ export class AuthController {
     }
 
     // 2) Check if user exists && password is correct
-    const user = await Users.findOne({ email }).select("+password")
+    const user = await User.findOne({ email }).select("+password")
 
     if (!user || !(await user.correctPassword(password, user.password))) {
       return next(new Error("Incorrect email or password"))
@@ -68,7 +68,7 @@ export class AuthController {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
     // 3) Check if user still exists
-    const currentUser = await Users.findById(decoded.id)
+    const currentUser = await User.findById(decoded.id)
     if (!currentUser) {
       return next(
         new Error("The user belonging to this token does no longer exist.")

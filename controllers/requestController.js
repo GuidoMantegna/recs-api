@@ -1,4 +1,4 @@
-import Requests from "../models/requests.js"
+import Request from "../models/requestModel.js"
 
 export class RequestsController {
   // static async get(req, res) {
@@ -11,14 +11,14 @@ export class RequestsController {
     if (req.params.tourId) filter = { tour: req.params.tourId }
     if (req.params.userId) filter = { user: req.params.userId }
     // Get all requests
-    const requests = await Requests.find(filter).populate('replies')
+    const requests = await Request.find(filter).populate('replies')
 
     // SEND RESPONSE
     res.status(200).json({
       status: "success",
       results: requests.length,
       data: {
-        data: requests,
+        requests,
       },
     })
   }
@@ -27,7 +27,7 @@ export class RequestsController {
     // Allow nested routes
     // if (!req.body.user) req.body.user = req.user.id
     // if (!req.body.tour) req.body.tour = req.params.tourId
-    const newRequest = await Requests.create({...req.body, user: req.user.id})
+    const newRequest = await Request.create({...req.body, user: req.user.id})
 
     res.status(201).json({
       status: "success",
