@@ -1,14 +1,11 @@
 import { Router } from "express"
-import { UsersController } from "../controllers/users.js"
-import { AuthController } from "../controllers/auth.js"
-// import { requestsRouter } from "./requests.js"
+import { UsersController } from "../controllers/usersController.js"
+import { AuthController } from "../controllers/authController.js"
 
 export const usersRouter = Router()
 
 usersRouter.post("/signup", AuthController.signup)
 usersRouter.post("/login", AuthController.login)
-
-// usersRouter.use('/requests', requestsRouter)
 
 usersRouter
   .route("/")

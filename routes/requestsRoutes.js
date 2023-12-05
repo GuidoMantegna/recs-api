@@ -1,7 +1,7 @@
 import { Router } from "express"
-import { RequestsController } from "../controllers/requests.js"
-import { AuthController } from "../controllers/auth.js"
-import { repliesRouter } from "./replies.js"
+import { RequestsController } from "../controllers/requestController.js"
+import { AuthController } from "../controllers/authController.js"
+import { repliesRouter } from "./repliesRoutes.js"
 
 export const requestsRouter = Router()
 

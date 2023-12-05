@@ -7,12 +7,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please tell us your name!"],
     unique: true,
+    trim: true,
   },
   email: {
     type: String,
     required: [true, "Please provide your email"],
     unique: true,
     lowercase: true,
+    trim: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
   photo: String,
@@ -61,10 +63,6 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword)
 }
 
-// userSchema.methods.hasPermissions = function (role) {
-//   return this.role === 'admin'
-// }
-
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
@@ -76,6 +74,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false
 }
 
-const Users = mongoose.model("Users", userSchema)
+const User = mongoose.model("User", userSchema)
 
-export default Users
+export default User
