@@ -7,10 +7,7 @@ export const usersRouter = Router()
 usersRouter.post("/signup", AuthController.signup)
 usersRouter.post("/login", AuthController.login)
 
-usersRouter
-  .route("/")
-  .get(AuthController.protect, UsersController.getAll)
-  .post(UsersController.createUser)
+usersRouter.route("/").get(UsersController.getAll)
 
 usersRouter
   .route("/:id")
@@ -20,4 +17,4 @@ usersRouter
     AuthController.restrictTo("admin"),
     UsersController.deleteUser
   )
-  .patch(UsersController.updateUser)
+  .patch(AuthController.protect, UsersController.updateUser)

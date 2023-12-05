@@ -1,67 +1,83 @@
-import mongoose from "mongoose"
 import Reply from "../models/replyModel.js"
 import Request from "../models/requestModel.js"
+import AppError from "../util/AppError.js"
 
 export class RepliesController {
   static async getAll(req, res, next) {
-    const replies = await Reply.find()
+    try {
+      const replies = await Reply.find()
 
-    res.status(200).json({
-      status: "success",
-      results: replies.length,
-      data: {
-        replies,
-      },
-    })
-    next()
+      res.status(200).json({
+        status: "success",
+        results: replies.length,
+        data: {
+          replies,
+        },
+      })
+    } catch (err) {
+      next(new AppError(err.message, 404))
+    }
   }
 
   static async getOne(req, res, next) {
-    const reply = await Reply.findById(req.params.id)
+    try {
+      const reply = await Reply.findById(req.params.id)
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        reply,
-      },
-    })
-    next()
+      res.status(200).json({
+        status: "success",
+        data: {
+          reply,
+        },
+      })
+    } catch (err) {
+      next(new AppError(`No reply found with id ${req.params.id}`, 404))
+    }
   }
 
   static async createOne(req, res, next) {
-    const newReply = await Reply.create({
-      ...req.body,
-      request: req.params.requestId,
-      user: req.user.id,
-    })
-    await Request.findByIdAndUpdate(req.params.requestId, {
-      $push: { replies: newReply._id },
-    })
-    res.status(201).json({
-      status: "success",
-      data: {
-        reply: newReply,
-      },
-    })
+    try {
+      const newReply = await Reply.create({
+        ...req.body,
+        request: req.params.requestId,
+        user: req.user.id,
+      })
+      await Request.findByIdAndUpdate(req.params.requestId, {
+        $push: { replies: newReply._id },
+      })
+      res.status(201).json({
+        status: "success",
+        data: {
+          reply: newReply,
+        },
+      })
+    } catch (err) {
+      next(
+        new AppError(`No request found with id ${req.params.requestId}`, 404)
+      )
+    }
   }
 
   static async likeOne(req, res, next) {
-    const updatedReply = await Reply.findByIdAndUpdate(
-      req.params.id,
-      {
-        $addToSet: { likes: req.user.id },
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    )
+    try {
+      const updatedReply = await Reply.findByIdAndUpdate(
+        req.params.id,
+        {
+          $addToSet: { likes: req.user.id },
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      )
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        reply: updatedReply,
-      },
-    })
+      res.status(200).json({
+        status: "success",
+        data: {
+          reply: updatedReply,
+        },
+      })
+    } catch (err) {
+      next(new AppError(`No reply found with id ${req.params.id}`, 404))
+    }
   }
 }

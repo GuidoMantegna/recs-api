@@ -6,7 +6,7 @@ import { repliesRouter } from "./repliesRoutes.js"
 
 export const requestsRouter = Router()
 
-requestsRouter.param("requestId", SharedController.checkID)
+// requestsRouter.param("requestId", SharedController.checkID)
 
 requestsRouter.use("/:requestId/replies", repliesRouter)
 
