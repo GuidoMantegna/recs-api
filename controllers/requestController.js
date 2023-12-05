@@ -1,9 +1,6 @@
 import Request from "../models/requestModel.js"
 
 export class RequestsController {
-  // static async get(req, res) {
-  //   res.send("REQUESTS")
-  // }
 
   static async getAll(req, res, next) {
     // To allow for nested GET reviews on tour (hack)

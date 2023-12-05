@@ -29,17 +29,6 @@ export class RepliesController {
   }
 
   static async createOne(req, res, next) {
-    // Check if request exists and if requestID is valid
-    const isIDValid = mongoose.Types.ObjectId.isValid(req.params.requestId)
-
-    if (!isIDValid) {
-      res.status(404).json({
-        status: "fail",
-        message: "No request found with that ID",
-      })
-      return
-    }
-
     const newReply = await Reply.create({
       ...req.body,
       request: req.params.requestId,
@@ -57,16 +46,6 @@ export class RepliesController {
   }
 
   static async likeOne(req, res, next) {
-    const reply = await Reply.findById(req.params.id)
-
-    if (!reply) {
-      res.status(404).json({
-        status: "fail",
-        message: "No reply found with that ID",
-      })
-      return
-    }
-
     const updatedReply = await Reply.findByIdAndUpdate(
       req.params.id,
       {
