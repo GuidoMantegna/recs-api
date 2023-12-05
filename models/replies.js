@@ -5,23 +5,33 @@ const repliesSchema = new mongoose.Schema(
   {
     reply: {
       type: String,
-      required: [true, "A request must have a brief description"],
+      required: [true, "A reply must have a brief description"],
       // unique: true,
       // trim: true,
       maxlength: [
         140,
-        "A request name must have less or equal than 140 characters",
+        "A reply name must have less or equal than 140 characters",
       ],
       minlength: [
         1,
-        "A request name must have more or equal than 1 characters",
+        "A reply name must have more or equal than 1 characters",
       ],
-      // validate: [validator.isAlpha, 'request name must only contain characters']
+      // validate: [validator.isAlpha, 'reply name must only contain characters']
     },
     createdAt: {
       type: Date,
       default: Date.now(),
       select: false,
+    },
+    videoURL: {
+      type: String,
+      required: [true, "A reply must have a video URL"],
+      validate: {
+        validator: function (value) {
+          return value.includes("youtube")
+        },
+        message: "It must be a YouTube video link"
+      }
     },
     user: {
       type: mongoose.Schema.ObjectId, // the type of each of the elements in the guides array must be a MongoDB ID.
