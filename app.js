@@ -9,7 +9,9 @@ const app = express()
 app.use(json()) // accept json data in the body of the request
 
 app.get("/", (req, res) => {
-  res.send("<h1>RECS API</h1>")
+  res.send(
+    "<h1>RECS API</h1>"
+  )
 })
 
 app.use("/api/v1/requests", requestsRouter)
