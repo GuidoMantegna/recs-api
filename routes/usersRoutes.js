@@ -9,12 +9,10 @@ usersRouter.post("/login", AuthController.login)
 
 usersRouter.route("/").get(UsersController.getAll)
 
+// protect all routes after this middleware
+usersRouter.use(AuthController.protect)
 usersRouter
   .route("/:id")
   .get(UsersController.getUser)
-  .delete(
-    AuthController.protect,
-    AuthController.restrictTo("admin"),
-    UsersController.deleteUser
-  )
-  .patch(AuthController.protect, UsersController.updateUser)
+  .delete(AuthController.restrictTo("admin"), UsersController.deleteUser)
+  .patch(UsersController.uploadUserPhoto, UsersController.updateUser)

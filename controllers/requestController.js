@@ -3,11 +3,11 @@ import AppError from "../util/AppError.js"
 
 export class RequestsController {
   static async getAll(req, res, next) {
-    let filter = {}
+    // let filter = {}
     // if (req.params.tourId) filter = { tour: req.params.tourId }
     // if (req.params.userId) filter = { user: req.params.userId }
     try {
-      const requests = await Request.find(filter).populate("replies")
+      const requests = await Request.find(req.query).populate("replies")
 
       // SEND RESPONSE
       res.status(200).json({
@@ -18,7 +18,7 @@ export class RequestsController {
         },
       })
     } catch (err) {
-      next(new AppError(err.message, 404))
+      next(new AppError(`The user with id ${req.params.id} does not exists`, 404))
     }
   }
 

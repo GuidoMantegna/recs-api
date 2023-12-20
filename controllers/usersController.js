@@ -1,5 +1,33 @@
 import Users from "../models/userModel.js"
 import AppError from "../util/AppError.js"
+import multer from "multer"
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+  // - 1st argument is an error if there is one, and if not, then just null.
+  // - 2nd argument is the actual destination.
+    cb(null, 'public/img/users');
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split('/')[1];
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); 
+  }
+});
+
+
+// test if the uploaded file is an image.
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 export class UsersController {
   static async getAll(req, res, next) {
@@ -53,6 +81,9 @@ export class UsersController {
   }
 
   static async updateUser(req, res, next) {
+    if (req.file) req.body.photo = req.file.originalname;
+    console.log(req.file)
+    console.log(req.body)
     try {
       const user = await Users.findByIdAndUpdate(req.params.id, req.body, {
         new: true, // returns the new updated document
@@ -69,4 +100,6 @@ export class UsersController {
       next(new AppError(`No user found with id ${req.params.id}`, 404))
     }
   }
+
+  static uploadUserPhoto = upload.single('photo');
 }
