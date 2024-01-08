@@ -14,7 +14,7 @@ const signToken = (id) => {
 }
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+  const token = signToken(user._id)
 
   const cookieOptions = {
     /* expires will make that the browser or the client in general 
@@ -25,9 +25,9 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true, // the cookie cannot be accessed or modified in any way by the browser
-  };
+  }
   // setting secure=true the cookie will be sent only on an encrypted connection (HTTPS)
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true
 
   /*
     1) attach the cookie to the response object
@@ -35,26 +35,26 @@ const createSendToken = (user, statusCode, res) => {
     3) specify the data we want to send (token)
     4) set the options for the cookie
   */
-  res.cookie('jwt', token, cookieOptions);
+  res.cookie("jwt", token, cookieOptions)
 
   // Remove password from output
-  user.password = undefined;
+  user.password = undefined
 
   res.status(statusCode).json({
-    status: 'success',
+    status: "success",
     // we send the token to the client
     token,
     data: {
       user,
     },
-  });
-};
+  })
+}
 
 export class AuthController {
   static async signup(req, res, next) {
     const newUser = await User.create(req.body)
 
-    createSendToken(newUser, 201, res);
+    createSendToken(newUser, 201, res)
   }
 
   static async login(req, res, next) {
@@ -73,18 +73,32 @@ export class AuthController {
     }
 
     // 3) If everything ok, send token to client
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, res)
   }
 
   static async protect(req, res, next) {
+    const { authorization, cookie } = req.headers
     // 1) Getting token and check of it's there
     let token
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1]
+
+    // Check if the token comes from req.headers.authorization or req.headers.cookie and set it to token
+    if (authorization && authorization.startsWith("Bearer")) {
+      token = authorization.split(" ")[1]
     }
+    if (
+      cookie &&
+      cookie.split("; ").some((c) => c.startsWith("jwt=")) && // check if the cookie contains jwt
+      cookie
+        .split("; ")
+        .find((c) => c.startsWith("jwt="))
+        .split("=")[1] !== "loggedout" // check if the 'jwt' cookie is not 'loggedout'
+    ) {
+      token = cookie
+        .split("; ")
+        .find((c) => c.startsWith("jwt="))
+        .split("=")[1]
+    }
+
     if (!token) {
       return next(
         new Error("You are not logged id! Please log in to get access.")
@@ -124,5 +138,14 @@ export class AuthController {
 
       next()
     }
+  }
+
+  static logout = (req, res) => {
+    // Instead of sending a token, we send 'loggedout'
+    res.cookie("jwt", "loggedout", {
+      expires: new Date(Date.now() + 10 * 1000),
+      httpOnly: true,
+    })
+    res.status(200).json({ status: "success" })
   }
 }
