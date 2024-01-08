@@ -6,6 +6,7 @@ export const usersRouter = Router()
 
 usersRouter.post("/signup", AuthController.signup)
 usersRouter.post("/login", AuthController.login)
+usersRouter.get("/logout", AuthController.logout)
 
 usersRouter.route("/").get(UsersController.getAll)
 

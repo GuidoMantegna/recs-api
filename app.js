@@ -24,7 +24,8 @@ export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => c
     }
 
     return callback(new AppError('Not allowed by CORS'))
-  }
+  },
+  credentials: true // allow cookies to be sent from the client
 })
 
 const app = express()
