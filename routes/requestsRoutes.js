@@ -14,3 +14,7 @@ requestsRouter
   .route("/")
   .get(RequestsController.getAll)
   .post(AuthController.protect, RequestsController.createOne)
+
+requestsRouter
+  .route("/:id")
+  .get(RequestsController.getOne)

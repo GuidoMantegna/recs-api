@@ -22,6 +22,21 @@ export class RequestsController {
     }
   }
 
+  static async getOne(req, res, next) {
+    try {
+      const request = await Request.findById(req.params.id).populate("replies")
+
+      res.status(200).json({
+        status: "success",
+        data: {
+          request,
+        },
+      })
+    } catch (err) {
+      next(new AppError(`The request with id ${req.params.id} does not exists`, 404))
+    }
+  }
+
   static async createOne(req, res, next) {
     try {
       const newRequest = await Request.create({
