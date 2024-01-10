@@ -52,9 +52,13 @@ const replySchema = new mongoose.Schema(
   }
 )
 
+
 replySchema.pre(/^find/, function (next) {
   this.populate({
     path: "likes",
+    select: "name",
+  }).populate({
+    path: "user",
     select: "name",
   })
   next()
