@@ -59,16 +59,20 @@ export class RepliesController {
 
   static async likeOne(req, res, next) {
     try {
-      const updatedReply = await Reply.findByIdAndUpdate(
-        req.params.id,
-        {
-          $addToSet: { likes: req.user.id },
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      )
+      const isLiked = await Reply.findById(req.params.id).where({
+        likes: req.user.id,
+      })
+      const query = isLiked
+        ? {
+            $pull: { likes: req.user.id },
+          }
+        : {
+            $addToSet: { likes: req.user.id },
+          }
+      const updatedReply = await Reply.findByIdAndUpdate(req.params.id, query, {
+        new: true,
+        runValidators: true,
+      })
 
       res.status(200).json({
         status: "success",
