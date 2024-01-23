@@ -31,6 +31,7 @@ export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => c
 const app = express()
 app.use(json()) // accept json data in the body of the request
 app.use(corsMiddleware())
+app.options('*', corsMiddleware())
 
 
 app.get("/", (req, res) => {
