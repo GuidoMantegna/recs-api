@@ -17,7 +17,7 @@ const replySchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now(),
-      select: false,
+      // select: false,
     },
     videoURL: {
       type: String,
@@ -43,6 +43,9 @@ const replySchema = new mongoose.Schema(
     request: {
       type: mongoose.Schema.ObjectId,
       ref: "Request",
+    },
+    availableOn: {
+      type: String,
     },
   },
   // SCHEMA OPTIONS

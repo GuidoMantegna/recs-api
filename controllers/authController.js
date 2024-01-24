@@ -85,7 +85,6 @@ export class AuthController {
     if (authorization && authorization.startsWith("Bearer")) {
       token = authorization.split(" ")[1]
     }
-    console.log({cookie})
     if (
       cookie &&
       cookie.split("; ").some((c) => c.startsWith("jwt=")) && // check if the cookie contains jwt
