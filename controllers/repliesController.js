@@ -5,7 +5,18 @@ import AppError from "../util/AppError.js"
 export class RepliesController {
   static async getAll(req, res, next) {
     try {
-      const replies = await Reply.find()
+      // get all liked replies by a user
+      const likes = req.query.likedBy ? { likes: {_id: req.query.likedBy} } : {};
+      // get all replies by a user
+      const user = req.query.user ? { user: {_id: req.query.user} } : {};
+      const queryObj = {
+        ...likes,
+        ...user,
+      }
+      // Exclude these fields from the query to be used later for sorting, pagination, and field limiting
+      const excludedFields = ["page", "sort", "limit", "fields"]
+      excludedFields.forEach((el) => delete queryObj[el])
+      const replies = await Reply.find(queryObj)
 
       res.status(200).json({
         status: "success",

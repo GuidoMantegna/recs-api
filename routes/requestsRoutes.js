@@ -1,6 +1,5 @@
 import { Router } from "express"
 import { RequestsController } from "../controllers/requestController.js"
-import { SharedController } from "../controllers/sharedController.js"
 import { AuthController } from "../controllers/authController.js"
 import { repliesRouter } from "./repliesRoutes.js"
 
