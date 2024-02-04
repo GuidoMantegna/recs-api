@@ -6,7 +6,7 @@ const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
   // - 1st argument is an error if there is one, and if not, then just null.
   // - 2nd argument is the actual destination.
-    cb(null, 'public/img/users');
+    cb(null, './public/img/users');
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
