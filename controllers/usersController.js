@@ -2,6 +2,7 @@ import Users from "../models/userModel.js"
 import AppError from "../util/AppError.js"
 import multer from "multer"
 
+// For uploading single image files
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
   // - 1st argument is an error if there is one, and if not, then just null.
@@ -10,9 +11,13 @@ const multerStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); 
+    // cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); 
+    cb(null, `user-${req.user.id}.${ext}`); 
   }
 });
+
+// For uploading multiple image files
+// const multerStorage = multer.memoryStorage()
 
 
 // test if the uploaded file is an image.
