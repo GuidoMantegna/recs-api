@@ -6,7 +6,9 @@ export class RequestsController {
     let filter = {}
     if (req.query.user) filter = { user: { _id: req.query.user } }
     try {
-      const requests = await Request.find(filter).populate("replies")
+      const requests = await Request.find(filter)
+        .populate("replies")
+        .sort("-createdAt")
 
       // SEND RESPONSE
       res.status(200).json({
