@@ -27,8 +27,12 @@ export class RequestsController {
 
   static async getOne(req, res, next) {
     try {
-      const request = await Request.findById(req.params.id).populate("replies")
-
+      const request = await Request.findById(req.params.id)
+        .populate({
+          path: "replies",
+          options: { sort: { createdAt: -1 } },
+        })
+      
       res.status(200).json({
         status: "success",
         data: {
