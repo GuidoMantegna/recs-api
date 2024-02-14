@@ -16,4 +16,4 @@ usersRouter
   .route("/:id")
   .get(UsersController.getUser)
   .delete(AuthController.restrictTo("admin"), UsersController.deleteUser)
-  .patch(UsersController.uploadUserPhoto, UsersController.updateUser)
+  .patch(UsersController.uploadUserPhoto, UsersController.resizeUserPhoto, UsersController.updateUser)
