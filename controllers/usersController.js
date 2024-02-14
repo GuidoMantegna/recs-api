@@ -1,23 +1,24 @@
 import Users from "../models/userModel.js"
 import AppError from "../util/AppError.js"
 import multer from "multer"
+import sharp from "sharp"
 
 // For uploading single image files
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-  // - 1st argument is an error if there is one, and if not, then just null.
-  // - 2nd argument is the actual destination.
-    cb(null, './public/img/users');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
-    // cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); 
-    cb(null, `user-${req.user.id}.${ext}`); 
-  }
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//   // - 1st argument is an error if there is one, and if not, then just null.
+//   // - 2nd argument is the actual destination.
+//     cb(null, './public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split('/')[1];
+//     // cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); 
+//     cb(null, `user-${req.user.id}.${ext}`); 
+//   }
+// });
 
 // For uploading multiple image files
-// const multerStorage = multer.memoryStorage()
+const multerStorage = multer.memoryStorage()
 
 
 // test if the uploaded file is an image.
@@ -86,9 +87,7 @@ export class UsersController {
   }
 
   static async updateUser(req, res, next) {
-    if (req.file) req.body.photo = req.file.originalname;
-    console.log(req.file)
-    console.log(req.body)
+    if (req.file) req.body.photo = req.file.filename;
     try {
       const user = await Users.findByIdAndUpdate(req.params.id, req.body, {
         new: true, // returns the new updated document
@@ -107,4 +106,18 @@ export class UsersController {
   }
 
   static uploadUserPhoto = upload.single('photo');
+
+  static async resizeUserPhoto(req, res, next) {
+    if (!req.file) return next();
+    req.file.filename = `user-${req.user.id}.jpeg`;
+  
+    await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    // finally want to write it to a file on our disk.
+    .toFile(`public/img/users/${req.file.filename}`);
+
+    next();
+  }
 }
