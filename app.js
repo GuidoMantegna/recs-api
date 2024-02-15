@@ -32,8 +32,10 @@ export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => c
 const app = express()
 app.use(express.static("public")) // serve static files
 app.use(json()) // accept json data in the body of the request
-app.use(corsMiddleware())
-app.options('*', corsMiddleware())
+// app.use(corsMiddleware())
+// app.options('*', corsMiddleware())
+app.use(cors({ origin: ACCEPTED_ORIGINS, credentials: true }))
+app.options('*', cors())
 
 
 app.get("/", (req, res) => {
