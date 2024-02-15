@@ -11,7 +11,8 @@ const ACCEPTED_ORIGINS = [
   'http://localhost:1234',
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://recs-tailwind.vercel.app/'
+  'https://recs-tailwind.vercel.app/',
+  'https://recs-tailwind.vercel.app'
 ]
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
