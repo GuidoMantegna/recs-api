@@ -12,7 +12,7 @@
   "routes": [
     {
       "src": "/((?!.*\\.\\w+$).*)",
-      "dest": "./index.js"
+      "dest": "/index.js"
     },
     {
       "src": "/(.+\\.[a-z]+)$",
