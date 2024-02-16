@@ -6,7 +6,7 @@
     },
     {
       "src": "public/**",
-      "use": "@vercel/static"
+      "use": "@vercel/output/static"
     }
   ],
   "routes": [
