@@ -7,7 +7,7 @@ const signToken = (id) => {
     // payload: an object for all the data that we're going to store inside of the token
     { id },
     // secret: basically a string for a secret
-    process.env.JWT_SECRET,
+    `${process.env.JWT_SECRET}`,
     // options
     { expiresIn: process.env.JWT_EXPIRES_IN }
   )
