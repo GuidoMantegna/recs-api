@@ -33,16 +33,16 @@ export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) =>
 const app = express()
 app.use(express.static("public")) // serve static files
 app.use(json()) // accept json data in the body of the request
-// app.use(corsMiddleware())
+app.use(corsMiddleware())
 // app.options('*', corsMiddleware())
-app.use(
-  cors({
-    origin: ACCEPTED_ORIGINS,
-    credentials: true,
-    exposedHeaders: ["Authorization", "Custom-Header"],
-  })
-)
-app.options("*", cors())
+// app.use(
+//   cors({
+//     origin: ACCEPTED_ORIGINS,
+//     credentials: true,
+//     exposedHeaders: ["Authorization", "Custom-Header"],
+//   })
+// )
+// app.options("*", cors())
 
 app.get("/", (req, res) => {
   res.send("<h1>RECS API</h1>")
