@@ -7,13 +7,17 @@
     },
     {
       "src": "public/**",
-      "use": "@vercel/static"
+      "use": "@vercel/output/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "/index.js"
+    },
+    {
+      "src": "/(.+)",
+      "dest": "public/$1"
     }
   ]
 }
