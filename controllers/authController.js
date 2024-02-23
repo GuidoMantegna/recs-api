@@ -78,30 +78,22 @@ export class AuthController {
 
   static async protect(req, res, next) {
     const { authorization, cookie } = req.headers
-    // 1) Getting token and check of it's there
     let token
+    const splittedCookie = cookie.split("; ")
+    const containsJWT = splittedCookie.some((c) => c.startsWith("jwt="))
+    const JWTNotLoggedOut = !splittedCookie.some((c) => c.includes("loggedout"))
 
     // Check if the token comes from req.headers.authorization or req.headers.cookie and set it to token
     if (authorization && authorization.startsWith("Bearer")) {
       token = authorization.split(" ")[1]
     }
-    if (
-      cookie &&
-      cookie.split("; ").some((c) => c.startsWith("jwt=")) && // check if the cookie contains jwt
-      cookie
-        .split("; ")
-        .find((c) => c.startsWith("jwt="))
-        .split("=")[1] !== "loggedout" // check if the 'jwt' cookie is not 'loggedout'
-    ) {
-      token = cookie
-        .split("; ")
-        .find((c) => c.startsWith("jwt="))
-        .split("=")[1]
+    if (cookie && containsJWT && JWTNotLoggedOut) {
+      token = splittedCookie.find((c) => c.startsWith("jwt=")).split("=")[1]
     }
 
     if (!token) {
       return next(
-        new Error("You are not logged id! Please log in to get access.")
+        new Error("You are not logged in! Please log in to get access.")
       )
     }
 
