@@ -27,7 +27,7 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true, // the cookie cannot be accessed or modified in any way by the browser
   }
   // setting secure=true the cookie will be sent only on an encrypted connection (HTTPS)
-  if (process.env.NODE_ENV === "production") cookieOptions.secure = true
+  // if (process.env.NODE_ENV === "production") cookieOptions.secure = true
 
   /*
     1) attach the cookie to the response object
