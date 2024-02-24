@@ -9,6 +9,12 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 mongoose.connect(DB, {
   // useNewUrlParser: true,
   // useCreateIndex: true,
